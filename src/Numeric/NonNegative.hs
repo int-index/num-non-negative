@@ -5,6 +5,7 @@
 module Numeric.NonNegative
   ( NonNegative(),
     getNonNegative,
+    toNonNegative,
     unsafeToNonNegative
   ) where
 
@@ -19,6 +20,10 @@ getNonNegative (NonNegative a) = a
 
 instance (Inj p a, Ord a, Num a) => Inj p (NonNegative a) where
   inj = unsafeToNonNegative . inj
+
+toNonNegative :: (Ord a, Num a) => a -> Maybe (NonNegative a)
+toNonNegative d =
+  if d >= 0 then Just (NonNegative d) else Nothing
 
 unsafeToNonNegative :: (Ord a, Num a) => a -> NonNegative a
 unsafeToNonNegative d =
