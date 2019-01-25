@@ -1,6 +1,6 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving, DerivingStrategies,
              MultiParamTypeClasses, UndecidableInstances,
-             FlexibleInstances, FlexibleContexts #-}
+             FlexibleInstances #-}
 
 module Numeric.NonNegative
   ( NonNegative(),
