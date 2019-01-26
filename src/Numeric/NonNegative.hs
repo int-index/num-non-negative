@@ -31,7 +31,7 @@ import Inj
 -- | An opaque newtype around a number @n@ that asserts that @n >= 0@.
 -- The constructor is not exported to maintain the invariant.
 newtype NonNegative a = NonNegative a
-  deriving newtype (Eq, Ord, Show, Real, Integral)
+  deriving newtype (Eq, Ord, Show, Real, Integral, RealFrac, Semigroup, Monoid)
 
 -- | Unwrap the newtype.
 getNonNegative :: NonNegative a -> a
@@ -78,3 +78,24 @@ instance (Ord a, Num a, Enum a) => Enum (NonNegative a) where
     | otherwise = coerce (enumFromThen n n')
   enumFromTo = coerce (enumFromTo @a)
   enumFromThenTo = coerce (enumFromThenTo @a)
+
+-- | Throws 'Underflow'.
+instance (Ord a, Num a, Floating a) => Floating (NonNegative a) where
+  pi = coerce (pi @a)
+  exp = coerce (exp @a)
+  log (NonNegative a) = unsafeToNonNegative (log a)
+  sqrt = coerce (sqrt @a)
+  (**) = coerce ((**) @a)
+  logBase (NonNegative b) (NonNegative a) = unsafeToNonNegative (logBase b a)
+  sin (NonNegative a) = unsafeToNonNegative (sin a)
+  cos (NonNegative a) = unsafeToNonNegative (cos a)
+  tan (NonNegative a) = unsafeToNonNegative (tan a)
+  asin (NonNegative a) = unsafeToNonNegative (asin a)
+  acos (NonNegative a) = unsafeToNonNegative (acos a)
+  atan (NonNegative a) = unsafeToNonNegative (atan a)
+  sinh (NonNegative a) = unsafeToNonNegative (sinh a)
+  cosh (NonNegative a) = unsafeToNonNegative (cosh a)
+  tanh (NonNegative a) = unsafeToNonNegative (tanh a)
+  asinh (NonNegative a) = unsafeToNonNegative (asinh a)
+  acosh (NonNegative a) = unsafeToNonNegative (acosh a)
+  atanh (NonNegative a) = unsafeToNonNegative (atanh a)
