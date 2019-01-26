@@ -27,6 +27,7 @@ module Numeric.NonNegative
 import Control.Exception
 import Data.Coerce (coerce)
 import Data.Maybe (mapMaybe)
+import Data.Semigroup (Semigroup)
 import Foreign.Storable (Storable)
 import Text.Printf (PrintfArg)
 import Inj
