@@ -25,14 +25,16 @@ module Numeric.NonNegative
   ) where
 
 import Control.Exception
-import Data.Coerce
-import Data.Maybe
+import Data.Coerce (coerce)
+import Data.Maybe (mapMaybe)
+import Foreign.Storable (Storable)
+import Text.Printf (PrintfArg)
 import Inj
 
 -- | An opaque newtype around a number @n@ that asserts that @n >= 0@.
 -- The constructor is not exported to maintain the invariant.
 newtype NonNegative a = NonNegative a
-  deriving newtype (Eq, Ord, Show, Real, Integral, RealFrac, Semigroup, Monoid)
+  deriving newtype (Eq, Ord, Show, Real, Integral, RealFrac, Semigroup, Monoid, Storable, PrintfArg)
 
 -- | Unwrap the newtype.
 getNonNegative :: NonNegative a -> a
