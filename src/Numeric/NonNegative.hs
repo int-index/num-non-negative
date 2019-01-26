@@ -26,6 +26,7 @@ module Numeric.NonNegative
 
 import Control.Exception
 import Data.Coerce
+import Data.Maybe
 import Inj
 
 -- | An opaque newtype around a number @n@ that asserts that @n >= 0@.
@@ -99,3 +100,10 @@ instance (Ord a, Num a, Floating a) => Floating (NonNegative a) where
   asinh (NonNegative a) = unsafeToNonNegative (asinh a)
   acosh (NonNegative a) = unsafeToNonNegative (acosh a)
   atanh (NonNegative a) = unsafeToNonNegative (atanh a)
+
+instance (Ord a, Num a, Read a) => Read (NonNegative a) where
+  readsPrec n s = mapMaybe (_1 toNonNegative) (readsPrec n s)
+  readList s = mapMaybe (_1 (traverse toNonNegative)) (readList s)
+
+_1 :: Functor f => (a -> f a') -> (a, b) -> f (a', b)
+_1 f (a, b) = (\a' -> (a', b)) <$> f a
