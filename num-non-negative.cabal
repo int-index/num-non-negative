@@ -1,5 +1,6 @@
 cabal-version: >=1.10
 name: num-non-negative
+synopsis: Non-negative numbers
 version: 0.1
 license: PublicDomain
 author: Vladislav Zavialov
