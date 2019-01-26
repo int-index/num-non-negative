@@ -10,7 +10,7 @@ build-type: Simple
 
 library
   exposed-modules: Numeric.NonNegative
-  build-depends: base >=4.9 && <5, inj
+  build-depends: base >=4.10 && <5, inj
   hs-source-dirs: src
   default-language: Haskell2010
   ghc-options: -Wall
