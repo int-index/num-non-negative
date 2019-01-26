@@ -1,6 +1,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving, DerivingStrategies,
              MultiParamTypeClasses, UndecidableInstances,
-             FlexibleInstances #-}
+             FlexibleInstances, TypeApplications,
+             ScopedTypeVariables #-}
 
 {- |
 
@@ -24,12 +25,13 @@ module Numeric.NonNegative
   ) where
 
 import Control.Exception
+import Data.Coerce
 import Inj
 
 -- | An opaque newtype around a number @n@ that asserts that @n >= 0@.
 -- The constructor is not exported to maintain the invariant.
 newtype NonNegative a = NonNegative a
-  deriving newtype (Eq, Ord, Show, Real)
+  deriving newtype (Eq, Ord, Show, Real, Integral)
 
 -- | Unwrap the newtype.
 getNonNegative :: NonNegative a -> a
@@ -50,16 +52,29 @@ unsafeToNonNegative d =
 
 -- | Throws 'Underflow'.
 instance (Ord a, Num a) => Num (NonNegative a) where
-  NonNegative a + NonNegative b = NonNegative (a + b)
+  (+) = coerce ((+) @a)
   NonNegative a - NonNegative b = unsafeToNonNegative (a - b)
-  NonNegative a * NonNegative b = NonNegative (a * b)
+  (*) = coerce ((*) @a)
   negate _ = throw Underflow
   abs = id
-  signum (NonNegative a) = NonNegative (signum a)
+  signum = coerce (signum @a)
   fromInteger = unsafeToNonNegative . fromInteger
 
 -- | Throws 'Underflow'.
 instance (Ord a, Fractional a) => Fractional (NonNegative a) where
-  NonNegative a / NonNegative b = NonNegative (a / b)
-  recip (NonNegative a) = NonNegative (recip a)
+  (/) = coerce ((/) @a)
+  recip = coerce (recip @a)
   fromRational = unsafeToNonNegative . fromRational
+
+-- | Throws 'Underflow'.
+instance (Ord a, Num a, Enum a) => Enum (NonNegative a) where
+  succ = coerce (succ @a)
+  pred (NonNegative a) = unsafeToNonNegative (pred a)
+  toEnum = unsafeToNonNegative . toEnum
+  fromEnum = coerce (fromEnum @a)
+  enumFrom = coerce (enumFrom @a)
+  enumFromThen (NonNegative n) (NonNegative n')
+    | n' < n = coerce (takeWhile (>=0) (enumFromThen n n'))
+    | otherwise = coerce (enumFromThen n n')
+  enumFromTo = coerce (enumFromTo @a)
+  enumFromThenTo = coerce (enumFromThenTo @a)
