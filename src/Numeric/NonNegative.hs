@@ -101,6 +101,23 @@ instance (Ord a, Num a, Floating a) => Floating (NonNegative a) where
   acosh (NonNegative a) = unsafeToNonNegative (acosh a)
   atanh (NonNegative a) = unsafeToNonNegative (atanh a)
 
+-- | Throws 'Underflow'.
+instance (Ord a, Num a, RealFloat a) => RealFloat (NonNegative a) where
+  floatRadix = coerce (floatRadix @a)
+  floatDigits = coerce (floatDigits @a)
+  floatRange = coerce (floatRange @a)
+  decodeFloat = coerce (decodeFloat @a)
+  encodeFloat s e = unsafeToNonNegative (encodeFloat s e)
+  exponent = coerce (exponent @a)
+  significand = coerce (significand @a)
+  scaleFloat = coerce (scaleFloat @a)
+  isNaN = coerce (isNaN @a)
+  isInfinite = coerce (isInfinite @a)
+  isDenormalized = coerce (isDenormalized @a)
+  isNegativeZero = coerce (isNegativeZero @a)
+  isIEEE = coerce (isIEEE @a)
+  atan2 (NonNegative y) (NonNegative x) = unsafeToNonNegative (atan2 y x)
+
 instance (Ord a, Num a, Read a) => Read (NonNegative a) where
   readsPrec n s = mapMaybe (_1 toNonNegative) (readsPrec n s)
   readList s = mapMaybe (_1 (traverse toNonNegative)) (readList s)
