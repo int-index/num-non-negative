@@ -41,6 +41,7 @@ newtype NonNegative a = NonNegative a
 getNonNegative :: NonNegative a -> a
 getNonNegative (NonNegative a) = a
 
+-- | Throws 'Underflow'.
 instance (Inj p a, Ord a, Num a) => Inj p (NonNegative a) where
   inj = unsafeToNonNegative . inj
 
